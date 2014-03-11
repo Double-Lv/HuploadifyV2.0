@@ -1,7 +1,10 @@
-Huploadify
+HuploadifyV2.0
+###支持断点续传功能的HTML5文件上传插件
 ==========
 
 jQuery文件上传插件，HTML5版uploadify，保持与uploadify一致的API，完全山寨。Uploadify官网：[http://www.uploadify.com/](http://www.uploadify.com/)
+
+在V2.0版本中，实现了文件的断点续传功能，这样在上传大文件的时候，就不用担心中途中断后重新从头再上传的麻烦了。为满足最大的灵活性，保存已上传文件大小和获取已上传文件大小的函数将由你来定义，你可以使用localStorage保存在本地，或者发送ajax请求保存在服务器上。
 
 #####已实现的特性有：
 1. 多文件上传
@@ -12,7 +15,7 @@ jQuery文件上传插件，HTML5版uploadify，保持与uploadify一致的API，
 6. 自定义文件队列中的html模板
 7. css样式分离出单独文件，可自己定制样式
 8. 添加文件上传各阶段的回调函数
-
+9. 断点续传
 ------------
 
 #####已实现常用的API，default配置信息如下：
@@ -29,6 +32,10 @@ jQuery文件上传插件，HTML5版uploadify，保持与uploadify一致的API，
     buttonText:'选择文件',//上传按钮上的文字
     removeTimeout: 1000,//上传完成后进度条的消失时间，单位毫秒
     itemTemplate:itemTemp,//上传队列显示的模板
+    breakPoints:false,//是否开启断点续传
+    fileSplitSize:1024*1024,//断点续传的文件块大小，单位Byte，默认1M
+    getUploadedSize:null,//类型：function，自定义获取已上传文件的大小函数，用于开启断点续传模式，可传入一个参数file，即当前上传的文件对象，需返回number类型
+    saveUploadedSize:null,//类型：function，自定义保存已上传文件的大小函数，用于开启断点续传模式，可传入两个参数：file：当前上传的文件对象，value：已上传文件的大小，单位Byte
     onUploadStart:null,//上传开始时的动作
     onUploadSuccess:null,//上传成功的动作
     onUploadComplete:null,//上传完成的动作
@@ -40,7 +47,14 @@ jQuery文件上传插件，HTML5版uploadify，保持与uploadify一致的API，
     onSelect:null,//选择文件后的回调函数，可传入参数file
     onQueueComplete:null//队列中的所有文件上传完成后触发
 #####使用方法
-首先页面上需要一个容器，通常是一个div，如：
+
+断点续传功能依赖四个配置参数，分别是：
+    breakPoints : ture|false  是否开启断点续传，如果设为false，则插件与1.0版本表现一致。
+    fileSplitSize : number  断点续传的文件块大小，单位Byte，默认1M
+     getUploadedSize : function  自定义获取已上传文件的大小函数，用于开启断点续传模式，可传入一个参数file，即当前上传的文件对象，需返回number类型
+    saveUploadedSize : function  类型：function，自定义保存已上传文件的大小函数，用于开启断点续传模式，可传入两个参数：file：当前上传的文件对象，value：已上传文件的大小，单位Byte
+
+下面是简单的使用localStorage进行断点本地保存的示例。首先页面上需要一个容器，通常是一个div，如：
 
 `<div id="upload"></div>`
 
@@ -56,6 +70,15 @@ jQuery文件上传插件，HTML5版uploadify，保持与uploadify一致的API，
         showUploadedSize:true,
         removeTimeout:9999999,
         uploader:'upload.php',
+        breakPoints:true,
+        fileSplitSize:1024*1024,
+        getUploadedSize:function(file){
+            var size = parseInt(localStorage.getItem(file.name)) || 0;
+            return size;
+        },
+        saveUploadedSize:function(file, value){
+            localStorage.setItem(file.name, value);
+        },
         onUploadStart:function(file){
             console.log(file.name+'开始上传');
         },
