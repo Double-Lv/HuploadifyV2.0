@@ -1,4 +1,4 @@
-HuploadifyV2.0
+#HuploadifyV2.0
 ###支持断点续传功能的HTML5文件上传插件
 ==========
 
@@ -16,6 +16,7 @@ jQuery文件上传插件，HTML5版uploadify，保持与uploadify一致的API，
 7. css样式分离出单独文件，可自己定制样式
 8. 添加文件上传各阶段的回调函数
 9. 断点续传
+
 ------------
 
 #####已实现常用的API，default配置信息如下：
