@@ -403,7 +403,7 @@
 					}
 			  	},
 			  	//上传成功后的回调函数
-			  	_uploadSucessCallback : function(file){
+			  	_uploadSucessCallback : function(file, xhr){
 			  		uploadManager._regulateView(file);
 					file.status = 2;//标记为上传成功
 					option.onUploadSuccess && option.onUploadSuccess(file, xhr.responseText);
@@ -468,11 +468,11 @@
 											}
 										}
 										else{
-											uploadManager._uploadSucessCallback(originalFile);
+											uploadManager._uploadSucessCallback(originalFile, xhr);
 										}
 									}
 									else{
-										uploadManager._uploadSucessCallback(originalFile);
+										uploadManager._uploadSucessCallback(originalFile, xhr);
 									}
 								}
 								else {

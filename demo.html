@@ -36,6 +36,9 @@ $(function(){
 			console.log('初始化');
 			console.log(obj);
 		},
+		onUploadSuccess:function(file){
+			console.log(file.name+'上传成功');
+		},
 		onUploadComplete:function(file){
 			console.log(file.name+'上传完成');
 		},
